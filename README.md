@@ -22,7 +22,7 @@ In Oct. 2020, ~92% of embedded documents did not assert either `X-Frame-Options`
 
 Happily, a small number of origins account for a large number of embedded resources, which means that the outreach we need to do is limited. Skimming through HTTP Archive for cross-origin embeds shows ~50k registrable domains total, but only 400 that are used on more than 1000 pages, and only 4 (`doubleclick.net`, `facebook.com`, `google.com`, and `youtube.com`) that show up on more than 1,000,000 pages. The following chart lays this out more clearly (note the log scale):
 
-> TODO(mkwst): Upload this image and the underlying data.
+![A chart showing the above data](chart.png)
 
 It seems reasonable to believe that we can effectively reach out to the embeddees with the widest reach, and encourage them to opt-into being embeddable.
 
