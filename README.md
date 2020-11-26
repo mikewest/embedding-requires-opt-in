@@ -13,6 +13,11 @@ Documents which intend to be embedded cross-origin ought to positively opt-into 
 
 Embeddable documents can opt-into the embedding by sending either an appropriate `X-Frame-Options` header, or a `Content-Security-Policy` header that asserts a frame-ancestors directive.
 
+This change could be a relatively straightforward addition to the [XFO algorithm](https://html.spec.whatwg.org/#check-a-navigation-response's-adherence-to-x-frame-options) in HTML. Something along the lines of the following would suffice (though it may make sense to split it out into a distinct check for clarity):
+
+> 6. If `xFrameOptions` is empty, append "sameorigin" to `xFrameOptions`.
+>
+>    Note: Step 2 already verifies that no `frame-ancestors` directive is present, so it's safe to set a default value here when no `X-Frame-Options` value is present.
 
 ## FAQ
 
@@ -32,7 +37,7 @@ It seems reasonable to believe that we can effectively reach out to the embeddee
 
 ### Should we establish some pithy "I'm a widget!" header?
 
-Some widget providers would likely want to make themselves broadly available, setting something like `Content-Security-Policy: frame-ancestors *` on practically every response. This doesn't seem like a substantial burden. Still, given CSP's conceptual complexity, it might be reasonable to create some sort of clear shorthand for the common widgety use case (perhaps the nonstandard but somewhat common `X-Frame-Options: ALLOWALL` (~0.6% of XFO responses in HTTP Archive)?).
+Some widget providers would likely want to make themselves broadly available, setting something like `Content-Security-Policy: frame-ancestors *` on practically every response. This doesn't seem like a substantial burden. Still, given CSP's conceptual complexity, it might be reasonable to create some sort of clear shorthand for the common widgety use case. Perhaps the nonstandard but somewhat common `X-Frame-Options: ALLOWALL` (~0.6% of XFO responses in HTTP Archive) would be a good fit? This would basically require only removing a note from HTML and adding "If `xFrameOptions[0]` is 'allowall', then return true" to the [XFO algorithm](https://html.spec.whatwg.org/#check-a-navigation-response's-adherence-to-x-frame-options).
 
 > HTTP Archive query for the data above:
 >
