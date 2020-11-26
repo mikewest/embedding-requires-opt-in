@@ -33,15 +33,32 @@ It seems reasonable to believe that we can effectively reach out to the embeddee
 
 > HTTP Archive query for the data above:
 > 
-> `SELECT NET.REG_DOMAIN(url) as host, COUNT(*) AS num FROM `httparchive.requests.2020_09_01_desktop` WHERE REGEXP_EXTRACT(payload, r'(?i)sec-fetch-site:\s*([a-z0-9_\/-]+)') != "same-origin" AND REGEXP_EXTRACT(payload, r'(?i)sec-fetch-dest:\s*([a-z0-9_\/-]+)') = "iframe" GROUP BY host ORDER BY num DESC`
+> ```sql
+> SELECT
+>   NET.REG_DOMAIN(url) as host,
+>   COUNT(*) AS num
+> FROM `httparchive.requests.2020_09_01_desktop`
+> WHERE
+>   REGEXP_EXTRACT(payload, r'(?i)sec-fetch-site:\s*([a-z0-9_\/-]+)') != "same-origin" AND
+>   REGEXP_EXTRACT(payload, r'(?i)sec-fetch-dest:\s*([a-z0-9_\/-]+)') = "iframe"
+> GROUP BY host
+> ORDER BY num DESC
+> ```
 
 ### Should we establish some pithy "I'm a widget!" header?
 
-Some widget providers would likely want to make themselves broadly available, setting something like `Content-Security-Policy: frame-ancestors *` on practically every response. This doesn't seem like a substantial burden. Still, given CSP's conceptual complexity, it might be reasonable to create some sort of clear shorthand for the common widgety use case. Perhaps the nonstandard but somewhat common `X-Frame-Options: ALLOWALL` (~0.6% of XFO responses in HTTP Archive) would be a good fit? This would basically require only removing a note from HTML and adding "If `xFrameOptions[0]` is 'allowall', then return true" to the [XFO algorithm](https://html.spec.whatwg.org/#check-a-navigation-response's-adherence-to-x-frame-options).
+Some widget providers would likely want to make themselves broadly available, setting something like `Content-Security-Policy: frame-ancestors *` on practically every response. This doesn't seem like a substantial burden. Still, given CSP's conceptual complexity, it might be reasonable to create some sort of clear shorthand for the common widgety use case. Perhaps the nonstandard but somewhat common `X-Frame-Options: ALLOWALL` (~0.6% of XFO responses in HTTP Archive) would be a good fit? This would basically require only removing a note from HTML and adding "If `xFrameOptions[0]` is 'allowall', then return true" to the [XFO algorithm](https://html.spec.whatwg.org/#check-a-navigation-response's-adherence-to-x-frame-options). This is basically a no-op from a technical perspective, but has symbolic appeal.
 
 > HTTP Archive query for the data above:
 >
-> `SELECT REGEXP_EXTRACT(payload, r'(?i)x-frame-options:\s*([a-z0-9_\/-]+)') AS xfo, COUNT(*) as num FROM `httparchive.requests.2020_09_01_desktop` GROUP BY xfo ORDER BY num DESC`
+> ```sql
+> SELECT
+>   REGEXP_EXTRACT(payload, r'(?i)x-frame-options:\s*([a-z0-9_\/-]+)') AS xfo,
+>   COUNT(*) as num
+> FROM `httparchive.requests.2020_09_01_desktop`
+> GROUP BY xfo
+> ORDER BY num DESC
+> ```
 
 ### Why allow same-origin embedding by default?
 
@@ -51,4 +68,11 @@ That said, it does seem reasonable to make embedding always opt-in if we can get
 
 > HTTP Archive query for the data above:
 >
-> `SELECT REGEXP_EXTRACT(payload, r'(?i)sec-fetch-site:\s*([a-z0-9_\/-]+)') AS sec_fetch_site, COUNT(*) as num FROM httparchive.requests.2020_09_01_desktop` WHERE REGEXP_EXTRACT(payload, r'(?i)sec-fetch-dest:\s*([a-z0-9_\/-]+)') = "iframe" GROUP BY sec_fetch_site`
+> ```sql
+> SELECT
+>   REGEXP_EXTRACT(payload, r'(?i)sec-fetch-site:\s*([a-z0-9_\/-]+)') AS sec_fetch_site,
+>   COUNT(*) as num
+> FROM `httparchive.requests.2020_09_01_desktop`
+> WHERE REGEXP_EXTRACT(payload, r'(?i)sec-fetch-dest:\s*([a-z0-9_\/-]+)') = "iframe"
+> GROUP BY sec_fetch_site
+> ```
