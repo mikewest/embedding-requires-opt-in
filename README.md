@@ -2,7 +2,7 @@
 
 ## A Problem
 
-Documents can embed anything they like via `<frame>` and `<iframe>`, exposing those embedded resources to a number of attacks, ranging from the well-known risks of clickjacking to the less-understood side-channel risks of XSLeaks and Spectre. Developers can mitigate these risks by choosing to limit the ways in which particular resources can be embedded. The `X-Frame-Options` header and CSP's more-granular `frame-ancestors` directive both provide developers with a measure of defense, and are both fairly widely deployed.
+Documents can embed anything they like via `<iframe>`, `<frame>`, `<embed>`, and `<object>`, thereby exposing those embedded resources to attacks ranging from the well-known risks of clickjacking to the less-understood side-channel risks of XSLeaks and Spectre. Developers can mitigate these risks by choosing to limit the ways in which particular resources can be embedded. The `X-Frame-Options` header and CSP's more-granular `frame-ancestors` directive both provide developers with a measure of defense, and are both fairly widely deployed.
 
 That said, as attackers continue to improve their ability to extract cross-origin information in unexpected ways, it becomes increasingly unfortunate that we place the burden of this defense on the victim. It's unfortunate both because it's one more thing for victims to ensure they get right, and because some scenarios make it quite difficult for victims to do the right thing (consider error conditions rejected by a reverse proxy; the application layer might never even have the opportunity to set up a defense).
 
